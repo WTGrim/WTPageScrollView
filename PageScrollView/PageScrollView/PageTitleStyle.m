@@ -13,7 +13,7 @@
 - (instancetype)init{
     if (self = [super init]) {
         
-        _showLine = NO;
+        _showSlider = NO;
         _scaleTitle = NO;
         _showExtraButton = NO;
         _extraButtonImageName = nil;
@@ -21,7 +21,10 @@
         _changeTitleColor = YES;
         _contentAnimatedWhenTitleClick = YES;
         _adjustTitleBeginDrag = NO;
-        _lineColor = [UIColor redColor];
+        _sliderColor = [UIColor redColor];
+        _sliderWidthFitTitle = NO;
+        _sliderHeight = 2.0;
+        _titleMargin = 15.0;
         _normalTitleColor = [UIColor blackColor];
         _selectedTitleColor = [UIColor redColor];
         _scaleNum = 1.2;
