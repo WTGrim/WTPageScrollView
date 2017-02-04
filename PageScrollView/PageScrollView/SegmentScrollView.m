@@ -219,6 +219,7 @@ static CGFloat const contentOffsetX = 20.0;
     return _extraButton;
 }
 
+#pragma mark - 点击手势
 - (void)titleOnClick:(UITapGestureRecognizer *)tap{
     
     TitleView *currentTitleView = (TitleView *)tap.view;
@@ -227,6 +228,7 @@ static CGFloat const contentOffsetX = 20.0;
     
     [self btnOnClickWithAnimated:YES taped:YES];
 }
+
 
 - (void)btnOnClickWithAnimated:(BOOL)animated taped:(BOOL)taped{
     
@@ -237,12 +239,60 @@ static CGFloat const contentOffsetX = 20.0;
     
     __weak typeof(self)weakSelf = self;
     [UIView animateWithDuration:duration animations:^{
-       
         
+        oldTitleView.textColor = weakSelf.titleStyle.normalTitleColor;
+        currentTitleView.textColor = weakSelf.titleStyle.selectedTitleColor;
+        oldTitleView.selected = NO;
+        currentTitleView.selected = YES;
+        if (weakSelf.titleStyle.isScaleTitle) {
+            oldTitleView.currentTransformX = 1.0;
+            currentTitleView.currentTransformX = weakSelf.titleStyle.scaleNum;
+        }
+        
+        if (weakSelf.sliderView) {
+            if (weakSelf.titleStyle.isScaleTitle) {
+                CGRect rect = weakSelf.sliderView.frame;
+                rect.origin.x = currentTitleView.frame.origin.x;
+                rect.size.width = currentTitleView.frame.size.width;
+                weakSelf.sliderView.frame = rect;
+            }else{
+                
+                if (weakSelf.titleStyle.sliderWidthFitTitle) {
+                    CGFloat sliderW = [self.titleWidths[_currentIndex] floatValue] + GapWidth;
+                    CGFloat sliderX = (currentTitleView.frame.size.width - sliderW) * 0.5;
+                    CGRect rect = weakSelf.sliderView.frame;
+                    rect.origin.x = sliderX;
+                    rect.size.width = sliderW;
+                    weakSelf.sliderView.frame = rect;
+                }else{
+                    CGRect rect = weakSelf.sliderView.frame;
+                    rect.origin.x = currentTitleView.frame.origin.x;
+                    rect.size.width = currentTitleView.frame.size.width;
+                    weakSelf.sliderView.frame = rect;
+                }
+            }
+        }
+    } completion:^(BOOL finished) {
+        
+        [weakSelf adjustTitleOffsetToCurrentIndex:_currentIndex];
     }];
+    
+    _oldIndex = _currentIndex;
+    if (self.titleDidClick) {
+        self.titleDidClick(currentTitleView, _currentIndex);
+    }
 }
 
+- (void)adjustTitleOffsetToCurrentIndex:(NSInteger)currentIndex{
+    
+    _oldIndex = currentIndex;
+    
+    
+}
+
+#pragma mark - 附加按钮点击
 - (void)extraButtonClick:(UIButton *)btn{
+    
     
 }
 @end
