@@ -15,6 +15,8 @@
         
         _showLine = NO;
         _scaleTitle = NO;
+        _showExtraButton = NO;
+        _extraButtonImageName = nil;
         _scrollTitle = YES;
         _changeTitleColor = YES;
         _contentAnimatedWhenTitleClick = YES;

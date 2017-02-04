@@ -13,6 +13,7 @@
 
 
 typedef void(^TitleDidClick)(TitleView *titleView, NSInteger index);
+typedef void(^ExtraButtonClick)(UIButton *extraButton);
 
 @interface SegmentScrollView : UIView
 

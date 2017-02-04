@@ -11,6 +11,9 @@
 @interface PageTitleStyle : NSObject
 //显示滑动条，默认是NO
 @property(nonatomic, assign, getter=isShowLine)BOOL showLine;
+//显示附加按钮
+@property(nonatomic, assign, getter=isShowExtraButton)BOOL showExtraButton;
+
 //缩放标题文字,默认是NO
 @property(nonatomic, assign, getter=isScaleTitle)BOOL scaleTitle;
 //是否能滚动标题
@@ -24,6 +27,7 @@
 
 //滑动条颜色
 @property(nonatomic, strong)UIColor *lineColor;
+@property(nonatomic, strong)NSString *extraButtonImageName;
 @property(nonatomic, strong)UIColor *normalTitleColor;
 @property(nonatomic, strong)UIColor *selectedTitleColor;
 @property(nonatomic, strong)UIFont *titleFont;

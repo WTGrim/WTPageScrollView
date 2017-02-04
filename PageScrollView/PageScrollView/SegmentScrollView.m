@@ -20,6 +20,8 @@
 @property(nonatomic, strong)UIScrollView *scrollView;
 //背景
 @property(nonatomic, strong)UIImageView *backgroundImageView;
+//附加按钮
+@property(nonatomic, strong)UIButton *extraButton;
 
 //设置渐变颜色
 @property(nonatomic, strong)NSArray *deltaRGBArray;
@@ -65,6 +67,7 @@ static CGFloat const contentOffsetX = 20.0;
     [self setupUI];
 }
 
+#pragma mark - 设置titleView
 - (void)setTitles{
     
     if(self.titlesArray.count == 0)return;
@@ -94,9 +97,52 @@ static CGFloat const contentOffsetX = 20.0;
 
 - (void)setupUI{
     
+    if (self.titlesArray.count == 0 ) return;
+    [self setupScrollView];
+    [self setupTitleView];
+    
+}
+
+#pragma mark - 设置scrollView
+- (void)setupScrollView{
+    
+    CGFloat extraBtnW = 44.0;
+    CGFloat extraBtnY = 5.0;
+    CGFloat scrollW = _extraButton ? _currentWidth - extraBtnW : _currentWidth;
+    self.scrollView.frame = CGRectMake(0, 0, scrollW, self.frame.size.height);
+    if (self.extraButton) {
+        self.extraButton.frame = CGRectMake(scrollW, extraBtnY, extraBtnW, self.frame.size.height - 2*extraBtnY);
+    }
+    
+}
+
+- (void)setupTitleView{
+    
+    
+}
+
+- (UIButton *)extraButton{
+    
+    if (!self.titleStyle.showExtraButton) return nil;
+    if (!_extraButton) {
+        UIButton *btn = [UIButton new];
+        NSString *imageName = self.titleStyle.extraButtonImageName ? self.titleStyle.extraButtonImageName : @"";
+        [btn setImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
+        btn.backgroundColor = [UIColor whiteColor];
+        btn.layer.shadowColor = [UIColor whiteColor].CGColor;
+        btn.layer.shadowOffset = CGSizeMake(-8, 0);
+        btn.layer.shadowOpacity = 1.0;
+        [btn addTarget:self action:@selector(extraButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        _extraButton = btn;
+    }
+    return _extraButton;
 }
 
 - (void)titleOnClick:(UITapGestureRecognizer *)tap{
+    
+}
+
+- (void)extraButtonClick:(UIButton *)btn{
     
 }
 @end
