@@ -21,13 +21,14 @@ typedef void(^ExtraButtonClick)(UIButton *extraButton);
 @property(nonatomic, strong)PageTitleStyle *titleStyle;
 @property(nonatomic, weak)id<ScrollPageViewDelegate>delegate;
 @property(nonatomic, strong)UIImage *backgroundImage;
+@property(nonatomic, copy)ExtraButtonClick extraButtonClick;
 
 - (instancetype)initWithFrame:(CGRect)frame titleStyle:(PageTitleStyle *)titleStyle delegate:(id<ScrollPageViewDelegate>)delegate titlesArray:(NSArray *)titlesArray titleDidClick:(TitleDidClick)titleDidClick;
 
 //切换下标调整UI
 - (void)adjustUIWithProgress:(CGFloat)progress oldIndex:(NSInteger)oldIndex currentIndex:(NSInteger)currentIndex;
 //选中标题
-- (void)changeTitleOffsetToCurrentIndex:(NSInteger)currentIndex;
+- (void)adjustTitleOffsetToCurrentIndex:(NSInteger)currentIndex;
 //设置选中下标
 - (void)setSelectedIndex:(NSInteger)index animated:(BOOL)animated;
 

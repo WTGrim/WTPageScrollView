@@ -413,14 +413,24 @@ static CGFloat const contentOffsetX = 20.0;
     }
     
     if (self.titleStyle.changeTitleColor) {//渐变颜色
+        oldTitleView.textColor = [UIColor colorWithRed:[self.selectedColorArray[0] floatValue] + [self.deltaRGBArray[0] floatValue] * progress green:[self.selectedColorArray[1] floatValue] + [self.deltaRGBArray[1] floatValue] * progress blue:[self.selectedColorArray[2] floatValue] + [self.deltaRGBArray[2] floatValue] * progress alpha:1];
+        currentTitleView.textColor = [UIColor colorWithRed:[self.normalColorArray[0] floatValue] + [self.deltaRGBArray[0] floatValue] * progress green:[self.normalColorArray[1] floatValue] + [self.deltaRGBArray[1] floatValue] * progress blue:[self.normalColorArray[2] floatValue] + [self.deltaRGBArray[2] floatValue] * progress alpha:1];
+    }
+    
+    if (self.titleStyle.isScaleTitle) {
         
+        CGFloat deltaScale = self.titleStyle.scaleNum - 1.0;
+        oldTitleView.currentTransformX = self.titleStyle.scaleNum - deltaScale * progress;
+        currentTitleView.currentTransformX = 1.0 + deltaScale * progress;
     }
 }
 
 #pragma mark - 附加按钮点击
 - (void)extraButtonClick:(UIButton *)btn{
     
-    
+    if (self.extraButtonClick) {
+        self.extraButtonClick(btn);
+    }
 }
 
 - (NSArray *)normalColorArray{
