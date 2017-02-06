@@ -40,6 +40,22 @@ static CGFloat const contentOffsetX = 20.0;
 
 @implementation SegmentScrollView
 
+- (NSMutableArray *)titleViews{
+    if (!_titleViews) {
+        _titleViews = [NSMutableArray array];
+    }
+    return _titleViews;
+}
+
+- (NSMutableArray *)titleWidths{
+    if (!_titleWidths) {
+        _titleWidths = [NSMutableArray array];
+    }
+    return _titleWidths;
+}
+
+
+
 - (instancetype)initWithFrame:(CGRect)frame titleStyle:(PageTitleStyle *)titleStyle delegate:(id<ScrollPageViewDelegate>)delegate titlesArray:(NSArray *)titlesArray titleDidClick:(TitleDidClick)titleDidClick{
     
     if (self = [super initWithFrame:frame]) {
@@ -47,6 +63,9 @@ static CGFloat const contentOffsetX = 20.0;
         self.delegate = delegate;
         self.titlesArray = titlesArray;
         self.titleDidClick = titleDidClick;
+        _currentIndex = 0;
+        _oldIndex = 0;
+        _currentWidth = frame.size.width;
         if (!self.titleStyle.isScrollTitle) {
             self.titleStyle.scaleTitle = !self.titleStyle.isShowSlider;  //放大标题和滑条不同时使用
         }
@@ -111,12 +130,26 @@ static CGFloat const contentOffsetX = 20.0;
     if (self.titleStyle.isScrollTitle) {
         TitleView *titleView = (TitleView *)self.titleViews.lastObject;
         if (titleView) {
-            self.scrollView.contentSize = CGSizeMake(CGRectGetMaxX(titleView.frame), 0.0);
+            self.scrollView.contentSize = CGSizeMake(CGRectGetMaxX(titleView.frame) + contentOffsetX, 0.0);
         }
     }
 }
 
 #pragma mark - 设置scrollView
+- (UIScrollView *)scrollView{
+    
+    if (!self.scrollView) {
+        UIScrollView * scrollView = [UIScrollView new];
+        scrollView.showsHorizontalScrollIndicator = NO;
+        scrollView.delegate = self;
+        scrollView.bounces = NO;
+        scrollView.pagingEnabled = NO;
+        scrollView.scrollsToTop = NO;
+        _scrollView = scrollView;
+    }
+    return _scrollView;
+}
+
 - (void)setupScrollView{
     
     CGFloat extraBtnW = 44.0;
@@ -226,11 +259,11 @@ static CGFloat const contentOffsetX = 20.0;
     if (!currentTitleView) return;
     _currentIndex = currentTitleView.tag;
     
-    [self btnOnClickWithAnimated:YES taped:YES];
+    [self titleOnClickWithAnimated:YES taped:YES];
 }
 
 
-- (void)btnOnClickWithAnimated:(BOOL)animated taped:(BOOL)taped{
+- (void)titleOnClickWithAnimated:(BOOL)animated taped:(BOOL)taped{
     
     if (_currentIndex == _oldIndex && taped) return;
     TitleView *oldTitleView = (TitleView *)self.titleViews[_oldIndex];
@@ -286,7 +319,52 @@ static CGFloat const contentOffsetX = 20.0;
 - (void)adjustTitleOffsetToCurrentIndex:(NSInteger)currentIndex{
     
     _oldIndex = currentIndex;
+    int index = 0;
+    for (TitleView *titleView in self.titleViews) {
+        if (index != currentIndex) {
+            titleView.textColor = self.titleStyle.normalTitleColor;
+            titleView.currentTransformX = 1.0;
+            titleView.selected = NO;
+        }else{
+            titleView.textColor = self.titleStyle.selectedTitleColor;
+            
+            if (self.titleStyle.isScaleTitle) {
+                titleView.currentTransformX = self.titleStyle.scaleNum;
+            }
+            titleView.selected = YES;
+        }
+        index ++;
+    }
     
+    if (self.scrollView.contentSize.width != self.scrollView.bounds.size.width + contentOffsetX) {
+        
+        //滑动
+        TitleView *titleView = (TitleView *)self.titleViews[currentIndex];
+        CGFloat offset = titleView.center.x - _currentWidth * 0.5;
+        if (offset < 0) {
+            offset = 0;
+        }
+        
+        CGFloat extraBtnW = self.extraButton ? self.extraButton.frame.size.width : 0;
+        CGFloat maxOffsetX = self.scrollView.contentSize.width - (_currentWidth - extraBtnW);
+        if (maxOffsetX < 0) {
+            maxOffsetX = 0;
+        }
+        
+        if (offset > maxOffsetX) {
+            offset = maxOffsetX;
+        }
+        
+        [self.scrollView setContentOffset:CGPointMake(offset, 0) animated:YES];
+    }
+    
+}
+
+- (void)setSelectedIndex:(NSInteger)index animated:(BOOL)animated{
+    
+    if (index < 0 || index >= self.titlesArray.count) return;
+    _currentIndex = index;
+    [self titleOnClickWithAnimated:animated taped:NO];
     
 }
 
@@ -294,5 +372,25 @@ static CGFloat const contentOffsetX = 20.0;
 - (void)extraButtonClick:(UIButton *)btn{
     
     
+}
+
+- (NSArray *)normalColorArray{
+    
+    if (!_normalColorArray) {
+        _normalColorArray = [self getColor:self.titleStyle.normalTitleColor];
+    }
+    return _normalColorArray;
+}
+
+- (NSArray *)getColor:(UIColor *)color{
+    
+    CGFloat numOfcomponents = CGColorGetNumberOfComponents(color.CGColor);
+    NSArray *rgbComponents;
+    if (numOfcomponents == 4) {
+        const CGFloat *components = CGColorGetComponents(color.CGColor);
+        rgbComponents = [NSArray arrayWithObjects:@(components[0]), @(components[1]), @(components[2]), nil];
+    
+    }
+    return rgbComponents;
 }
 @end
