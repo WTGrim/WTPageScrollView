@@ -17,7 +17,7 @@
 
 @property(nonatomic, weak)SegmentScrollView *segmentView;
 @property(nonatomic, strong)WTCollectionView *collectionView;
-@property(nonatomic, strong)UICollectionViewLayout *layout;
+@property(nonatomic, strong)UICollectionViewFlowLayout *collectionLayout;
 @property(nonatomic, weak)UIViewController *parentViewController;
 @property(nonatomic, assign)NSInteger itemsCount;
 @property(nonatomic, strong)NSMutableDictionary<NSString *, UIViewController<ScrollPageViewChildVcDelegate> *> *childVcDict; //所有子控制器
@@ -29,6 +29,8 @@
 @property(nonatomic, assign)BOOL forbidTouchToChangePosition;
 
 @end
+
+static NSString *const cellID = @"cellID";
 
 @implementation PageContentView
 
@@ -129,9 +131,103 @@
 }
 
 #pragma mark - 外界设置偏移量
-- (void)setContentOffset:(CGFloat)offset animated:(BOOL)animated{
+- (void)setContentOffset:(CGPoint)offset animated:(BOOL)animated{
     
     _forbidTouchToChangePosition = YES;
+    NSInteger currentIndex = offset.x / self.collectionView.bounds.size.width;
+    _oldIndex = _currentIndex;
+    self.currentIndex = currentIndex;
+    _changeAnimated = YES;
+    
+    if (animated) {
+        CGFloat deltaX = offset.x - self.collectionView.contentOffset.x;
+        NSInteger page = fabs(deltaX) / self.collectionView.bounds.size.width;
+        //滑动两页以上省去中间动画
+        if (page >= 2) {
+            _changeAnimated = NO;
+            __weak typeof(self)weakSelf = self;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                __strong typeof(weakSelf)strongSelf = weakSelf;
+                if (strongSelf) {
+                    [strongSelf.collectionView setContentOffset:offset animated:NO];
+                }
+            });
+        }else{
+            [self.collectionView setContentOffset:offset animated:animated];
+        }
+    }else{
+        [self.collectionView setContentOffset:offset animated:animated];
+    }
+}
+
+#pragma mark - scrollViewDelegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    
+    if (self.forbidTouchToChangePosition || self.collectionView.contentOffset.x <= 0 || self.collectionView.contentOffset.x > self.collectionView.contentSize.width - self.collectionView.bounds.size.width) {
+        return;
+    }
+    
+    CGFloat tempProgress = self.collectionView.contentOffset.x / self.collectionView.bounds.size.width;
+    CGFloat progress = tempProgress - floor(tempProgress);
+    NSInteger index = tempProgress;
+    CGFloat deltaX = self.collectionView.contentOffset.x - _oldOffset;
+    //向右滑动
+    if (deltaX > 0) {
+        if (progress == 0.0) {
+            return;
+        }
+        self.currentIndex = index + 1;
+        self.oldIndex = index;
+    }else if (deltaX < 0) {//向左滑动
+        
+        progress = 1.0 - progress;
+        self.currentIndex = index;
+        self.oldIndex = index + 1;
+        
+    }else{
+        return;
+    }
+    
+    [self didMoveFromIndex:self.oldIndex toIndex:self.currentIndex progress:progress];
+}
+
+//滚动减速完成更新title
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
 }
+
+- (void)didMoveFromIndex:(NSInteger)oldIndex toIndex:(NSInteger)currentIndex progress:(CGFloat)progress{
+    
+    if (self.segmentView) {
+        [self.segmentView adjustUIWithProgress:progress oldIndex:oldIndex currentIndex:currentIndex];
+    }
+}
+
+- (WTCollectionView *)collectionView{
+    if (!_collectionView) {
+        _collectionView = [[WTCollectionView alloc]initWithFrame:self.bounds collectionViewLayout:self.collectionLayout];
+        _collectionView.dataSource = self;
+        _collectionView.delegate = self;
+        _collectionView.pagingEnabled = true;
+        _collectionView.scrollsToTop = false;
+        _collectionView.showsHorizontalScrollIndicator = false;
+        [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:cellID];
+        [self addSubview:_collectionView];
+    }
+    return _collectionView;
+}
+
+- (UICollectionViewFlowLayout *)collectionLayout{
+    
+    if (!_collectionLayout) {
+        _collectionLayout = [[UICollectionViewFlowLayout alloc]init];
+        _collectionLayout.itemSize = self.bounds.size;
+        _collectionLayout.minimumLineSpacing = 0.0;
+        _collectionLayout.minimumInteritemSpacing = 0.0;
+        _collectionLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    }
+    return _collectionLayout;
+}
+
+
 @end

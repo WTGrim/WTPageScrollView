@@ -18,7 +18,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame segmentView:(SegmentScrollView *)segmentView parentViewController:(UIViewController *)parentViewController delegate:(id<ScrollPageViewDelegate>)delegate;
 
-- (void)setContentOffset:(CGFloat)offset animated:(BOOL)animated;
+- (void)setContentOffset:(CGPoint)offset animated:(BOOL)animated;
 - (void)reload;
 
 @end
