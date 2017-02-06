@@ -30,4 +30,5 @@ typedef BOOL(^scrollViewShouldBeginPanGestureRecognizerBlock)(WTCollectionView *
 
 - (void)setScrollViewShouldBeginPanGestureRecognizer:(scrollViewShouldBeginPanGestureRecognizerBlock)block;
 
+
 @end
