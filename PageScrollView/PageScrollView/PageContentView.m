@@ -27,6 +27,7 @@
 @property(nonatomic, assign)NSInteger oldIndex;
 @property(nonatomic, assign)NSInteger currentIndex;
 @property(nonatomic, assign)BOOL forbidTouchToChangePosition;
+@property(nonatomic, assign)BOOL needManageLifeCycle;
 
 @end
 
@@ -160,6 +161,46 @@ static NSString *const cellID = @"cellID";
     }
 }
 
+
+#pragma mark - collectionViewDelegate And collectionViewDataSource
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
+    return 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    
+    return _itemsCount;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+    UICollectionViewCell *cell  = [collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
+    
+    //避免重用时显示错误， 移除subViews
+    [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if (_systemVersion >= 8) {
+        [self setChildVcCell:cell indexPath:indexPath];
+    }
+}
+
+- (void)setChildVcCell:(UICollectionViewCell *)cell indexPath:(NSIndexPath *)indexPath{
+    
+    _currentChildVc = [self.childVcDict valueForKey:[NSString stringWithFormat:@"%ld", indexPath.row]];
+    BOOL isFirstLoad = _currentChildVc == nil;
+    
+    if (_delegate && [_delegate respondsToSelector:@selector(childViewController:forIndex:)]) {
+        
+        if (!_currentChildVc) {
+            _currentChildVc = [_delegate childViewController:nil forIndex:indexPath.row];
+        }
+    }
+}
+
 #pragma mark - scrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     
@@ -194,6 +235,103 @@ static NSString *const cellID = @"cellID";
 //滚动减速完成更新title
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
+    NSInteger currentIndex = self.collectionView.contentOffset.x / self.collectionView.bounds.size.width;
+    
+    [self didMoveFromIndex:currentIndex toIndex:currentIndex progress:1.0];
+    [self adjustSegmentTitleToCurrentIndex:currentIndex];
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    
+    _oldOffset = self.collectionView.contentOffset.x;
+    self.forbidTouchToChangePosition = NO;
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    
+    UINavigationController *nav = (UINavigationController *)self.parentViewController.parentViewController;
+    if ([nav isKindOfClass:[UINavigationController class]] && nav.interactivePopGestureRecognizer) {
+        nav.interactivePopGestureRecognizer.enabled = true;
+    }
+}
+
+- (void)willAppearAtIndex:(NSInteger)index{
+    
+    UIViewController<ScrollPageViewChildVcDelegate> *vc = [self.childVcDict valueForKey:[NSString stringWithFormat:@"%ld", index]];
+    if (vc) {
+        if ([vc respondsToSelector:@selector(wt_viewWillAppearForIndex:)]) {
+            [vc wt_viewWillAppearForIndex:index];
+        }
+        
+        if (_needManageLifeCycle) {
+            [vc beginAppearanceTransition:true animated:false];
+        }
+        
+        if (_delegate && [_delegate respondsToSelector:@selector(scrollPageController:childViewControllWillAppear:forIndex:)]) {
+            [_delegate scrollPageController:self.parentViewController childViewControllWillAppear:vc forIndex:index];
+        }
+    }
+}
+
+- (void)didAppearAtIndex:(NSInteger)index{
+    
+    UIViewController<ScrollPageViewChildVcDelegate> *vc = [self.childVcDict valueForKey:[NSString stringWithFormat:@"%ld", index]];
+    if (vc) {
+        if ([vc respondsToSelector:@selector(wt_viewDidAppearForIndex:)]) {
+            [vc wt_viewDidAppearForIndex:index];
+        }
+        
+        if (_needManageLifeCycle) {
+            [vc endAppearanceTransition];
+        }
+        
+        if (_delegate && [_delegate respondsToSelector:@selector(scrollPageController:childViewControllDidAppear:forIndex:)]) {
+            [_delegate scrollPageController:self.parentViewController childViewControllDidAppear:vc forIndex:index];
+        }
+    }
+}
+
+- (void)willDisappearAtIndex:(NSInteger)index{
+    
+    UIViewController<ScrollPageViewChildVcDelegate> *vc = [self.childVcDict valueForKey:[NSString stringWithFormat:@"%ld", index]];
+    if (vc) {
+        if ([vc respondsToSelector:@selector(wt_viewWillDisappearForIndex:)]) {
+            [vc wt_viewWillDisappearForIndex:index];
+        }
+        
+        if (_needManageLifeCycle) {
+            [vc beginAppearanceTransition:false animated:false];
+        }
+        
+        if (_delegate && [_delegate respondsToSelector:@selector(scrollPageController:childViewControllWillDisappear:forIndex:)]) {
+            [_delegate scrollPageController:self.parentViewController childViewControllWillDisappear:vc forIndex:index];
+        }
+    }
+}
+
+- (void)didDisappearAtIndex:(NSInteger)index{
+    
+    UIViewController<ScrollPageViewChildVcDelegate> *vc = [self.childVcDict valueForKey:[NSString stringWithFormat:@"%ld", index]];
+    if (vc) {
+        if ([vc respondsToSelector:@selector(wt_viewDidDisappearForIndex:)]) {
+            [vc wt_viewDidDisappearForIndex:index];
+        }
+        
+        if (_needManageLifeCycle) {
+            [vc endAppearanceTransition];
+        }
+        
+        if (_delegate && [_delegate respondsToSelector:@selector(scrollPageController:childViewControllDidDisappear:forIndex:)]) {
+            [_delegate scrollPageController:self.parentViewController childViewControllDidDisappear:vc forIndex:index];
+        }
+    }
+}
+
+- (void)adjustSegmentTitleToCurrentIndex:(NSInteger)currentIndex{
+    
+    if (self.segmentView) {
+        [self.segmentView adjustTitleOffsetToCurrentIndex:currentIndex];
+    }
 }
 
 - (void)didMoveFromIndex:(NSInteger)oldIndex toIndex:(NSInteger)currentIndex progress:(CGFloat)progress{
