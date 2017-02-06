@@ -368,6 +368,55 @@ static CGFloat const contentOffsetX = 20.0;
     
 }
 
+#pragma mark - 调整滑动条和渐变颜色
+- (void)adjustUIWithProgress:(CGFloat)progress oldIndex:(NSInteger)oldIndex currentIndex:(NSInteger)currentIndex{
+    
+    if (oldIndex >= self.titlesArray.count || oldIndex < 0 || currentIndex >= self.titlesArray.count || currentIndex < 0) {
+        return;
+    }
+    
+    _oldIndex = currentIndex;
+    TitleView *oldTitleView = (TitleView *)self.titleViews[oldIndex];
+    TitleView *currentTitleView = (TitleView *)self.titleViews[currentIndex];
+    
+    CGFloat distanceX = currentTitleView.frame.origin.x - oldTitleView.frame.origin.x;
+    CGFloat distanceW = currentTitleView.frame.size.width - oldTitleView.frame.size.width;
+    
+    CGRect rect = self.sliderView.frame;
+
+    if (self.sliderView) {
+        
+        if (self.titleStyle.isScrollTitle) {
+            rect.origin.x = oldTitleView.frame.origin.x + distanceX * progress;
+            rect.size.width = oldTitleView.frame.size.width + distanceW * progress;
+            self.sliderView.frame = rect;
+        }else{
+            if (self.titleStyle.sliderWidthFitTitle) {
+                CGFloat oldSliderW = [self.titleWidths[oldIndex] floatValue] + GapWidth;
+                CGFloat currentSliderW = [self.titleWidths[currentIndex] floatValue] + GapWidth;
+                distanceW = currentSliderW - oldSliderW;
+                
+                CGFloat oldSliderX = oldTitleView.frame.origin.x + (oldTitleView.frame.size.width - oldSliderW) * 0.5;
+                CGFloat currentSliderX = currentTitleView.frame.origin.x + (currentTitleView.frame.size.width - currentSliderW) * 0.5;
+                distanceX = currentSliderX - oldSliderX;
+                
+                rect.origin.x = oldSliderX + distanceX * progress;
+                rect.size.width = oldSliderW + distanceW * progress;
+                self.sliderView.frame = rect;
+                
+            }else{
+                rect.origin.x = oldTitleView.frame.origin.x + distanceX * progress;
+                rect.size.width = oldTitleView.frame.size.width + distanceW * progress;
+                self.sliderView.frame = rect;
+            }
+        }
+    }
+    
+    if (self.titleStyle.changeTitleColor) {//渐变颜色
+        
+    }
+}
+
 #pragma mark - 附加按钮点击
 - (void)extraButtonClick:(UIButton *)btn{
     
@@ -382,14 +431,34 @@ static CGFloat const contentOffsetX = 20.0;
     return _normalColorArray;
 }
 
+- (NSArray *)selectedColorArray{
+    
+    if (!_selectedColorArray) {
+        _selectedColorArray = [self getColor:self.titleStyle.selectedTitleColor];
+    }
+    return _selectedColorArray;
+}
+
+- (NSArray *)deltaRGBArray{
+    
+    if (!_deltaRGBArray) {
+        if (self.normalColorArray && self.selectedColorArray) {
+            CGFloat deltaR = [self.normalColorArray[0] floatValue] - [self.selectedColorArray[0] floatValue];
+            CGFloat deltaG = [self.normalColorArray[1] floatValue] - [self.selectedColorArray[1] floatValue];
+            CGFloat deltaB = [self.normalColorArray[2] floatValue] - [self.selectedColorArray[2] floatValue];
+            _deltaRGBArray = @[@(deltaR), @(deltaG), @(deltaB)];
+        }
+    }
+    return _deltaRGBArray;
+}
+
 - (NSArray *)getColor:(UIColor *)color{
     
     CGFloat numOfcomponents = CGColorGetNumberOfComponents(color.CGColor);
     NSArray *rgbComponents;
     if (numOfcomponents == 4) {
         const CGFloat *components = CGColorGetComponents(color.CGColor);
-        rgbComponents = [NSArray arrayWithObjects:@(components[0]), @(components[1]), @(components[2]), nil];
-    
+        rgbComponents = @[@(components[0]), @(components[1]), @(components[2])];
     }
     return rgbComponents;
 }
