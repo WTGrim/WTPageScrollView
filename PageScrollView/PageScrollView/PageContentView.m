@@ -7,6 +7,7 @@
 //
 
 #import "PageContentView.h"
+#import "UIViewController+PageController.h"
 
 @interface PageContentView ()<UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource>{
     
@@ -188,6 +189,49 @@ static NSString *const cellID = @"cellID";
     }
 }
 
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+    //没有滚动完成
+    if (_currentIndex == indexPath.row) {
+        
+        if (_needManageLifeCycle) {
+            UIViewController<ScrollPageViewChildVcDelegate> *currentVc = [self.childVcDict valueForKey:[NSString stringWithFormat:@"%ld", _currentIndex]];
+            [currentVc beginAppearanceTransition:YES animated:NO];
+            UIViewController<ScrollPageViewChildVcDelegate> *oldVc = [self.childVcDict valueForKey:[NSString stringWithFormat:@"%ld", indexPath.row]];
+            [oldVc beginAppearanceTransition:NO animated:NO];
+        }
+        
+        [self didAppearAtIndex:_currentIndex];
+        [self didDisappearAtIndex:indexPath.row];
+    }else{
+        
+        if (_oldIndex == indexPath.row) {//滚动完成
+            if (self.forbidTouchToChangePosition && !_changeAnimated) {
+                [self willDisappearAtIndex:_oldIndex];
+                [self didDisappearAtIndex:_oldIndex];
+                
+            }else{
+                
+                [self didAppearAtIndex:_currentIndex];
+                [self didDisappearAtIndex:indexPath.row];
+            }
+        }else{
+            
+            //滚动还没有完成又反向打开另一页
+            if (_needManageLifeCycle) {
+                
+                UIViewController<ScrollPageViewChildVcDelegate> *currentVc = [self.childVcDict valueForKey:[NSString stringWithFormat:@"%ld", _oldIndex]];
+                [currentVc beginAppearanceTransition:YES animated:NO];
+                UIViewController<ScrollPageViewChildVcDelegate> *oldVc = [self.childVcDict valueForKey:[NSString stringWithFormat:@"%ld", indexPath.row]];
+                [oldVc beginAppearanceTransition:NO animated:NO];
+            }
+            [self didAppearAtIndex:_oldIndex];
+            [self didDisappearAtIndex:indexPath.row];
+        }
+        
+    }
+}
+
 - (void)setChildVcCell:(UICollectionViewCell *)cell indexPath:(NSIndexPath *)indexPath{
     
     _currentChildVc = [self.childVcDict valueForKey:[NSString stringWithFormat:@"%ld", indexPath.row]];
@@ -197,8 +241,66 @@ static NSString *const cellID = @"cellID";
         
         if (!_currentChildVc) {
             _currentChildVc = [_delegate childViewController:nil forIndex:indexPath.row];
+            
+            _currentChildVc.currentIndex = indexPath.row;
+            [self.childVcDict setValue:_currentChildVc forKey:[NSString stringWithFormat:@"%ld", indexPath.row]];
+        }else{
+            [_delegate childViewController:_currentChildVc forIndex:indexPath.row];
         }
     }
+    
+    if (_currentChildVc.pageController != self.parentViewController) {
+        [self.parentViewController addChildViewController:_currentChildVc];
+    }
+    
+    _currentChildVc.view.frame = self.bounds;
+    [cell.contentView addSubview:_currentChildVc.view];
+    [_currentChildVc didMoveToParentViewController:self.parentViewController];
+    
+    if (_isLoadFirstView) {
+        if (self.forbidTouchToChangePosition && !_changeAnimated) {
+            [self willAppearAtIndex:_currentIndex];
+            
+            if (isFirstLoad) {
+                if ([_currentChildVc respondsToSelector:@selector(wt_viewDidLoadForIndex:)]) {
+                    [_currentChildVc wt_viewDidLoadForIndex:indexPath.row];
+                }
+            }
+            [self didAppearAtIndex:_currentIndex];
+        }else{
+            
+            [self willAppearAtIndex:indexPath.row];
+            if (isFirstLoad) {
+                if ([_currentChildVc respondsToSelector:@selector(wt_viewDidLoadForIndex:)]) {
+                    [_currentChildVc wt_viewDidLoadForIndex:indexPath.row];
+                }
+            }
+            [self didAppearAtIndex:indexPath.row];
+        }
+        _isLoadFirstView = NO;
+        
+    }else{
+        
+        if (self.forbidTouchToChangePosition && !_changeAnimated) {
+            [self willAppearAtIndex:_currentIndex];
+            if (isFirstLoad) {
+                if ([_currentChildVc respondsToSelector:@selector(wt_viewDidLoadForIndex:)]) {
+                    [_currentChildVc wt_viewDidLoadForIndex:indexPath.row];
+                }
+            }
+            [self didAppearAtIndex:_currentIndex];
+        }else{
+            
+            [self willAppearAtIndex:indexPath.row];
+            if (isFirstLoad) {
+                if ([_currentChildVc respondsToSelector:@selector(wt_viewDidLoadForIndex:)]) {
+                    [_currentChildVc wt_viewDidLoadForIndex:indexPath.row];
+                }
+            }
+            [self didAppearAtIndex:_oldIndex];
+        }
+    }
+    
 }
 
 #pragma mark - scrollViewDelegate
@@ -367,5 +469,38 @@ static NSString *const cellID = @"cellID";
     return _collectionLayout;
 }
 
+- (NSMutableDictionary<NSString *,UIViewController<ScrollPageViewChildVcDelegate> *> *)childVcDict{
+    
+    if (!_childVcDict) {
+        _childVcDict = [NSMutableDictionary dictionary];
+    }
+    return _childVcDict;
+}
+
+- (void)setCurrentIndex:(NSInteger)currentIndex{
+    
+    if (_currentIndex != currentIndex) {
+        _currentIndex = currentIndex;
+        
+        if (self.segmentView.titleStyle.isAdjustTitleBeginDrag) {
+            [self adjustSegmentTitleToCurrentIndex:currentIndex];
+        }
+    }
+    
+}
+
+//外界刷新视图
+- (void)reload{
+    
+    [self.childVcDict enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, UIViewController<ScrollPageViewChildVcDelegate> * _Nonnull obj, BOOL * _Nonnull stop) {
+       
+        [PageContentView removeChildVc:obj];
+        obj = nil;
+    }];
+    
+    self.childVcDict = nil;
+    [self.collectionView reloadData];
+    [self commonConfig];
+}
 
 @end
