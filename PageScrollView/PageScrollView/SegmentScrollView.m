@@ -138,11 +138,11 @@ static CGFloat const contentOffsetX = 20.0;
 #pragma mark - 设置scrollView
 - (UIScrollView *)scrollView{
     
-    if (!self.scrollView) {
-        UIScrollView * scrollView = [UIScrollView new];
+    if (!_scrollView) {
+        UIScrollView * scrollView = [[UIScrollView alloc]init];
         scrollView.showsHorizontalScrollIndicator = NO;
         scrollView.delegate = self;
-        scrollView.bounces = NO;
+//        scrollView.bounces = NO;
         scrollView.pagingEnabled = NO;
         scrollView.scrollsToTop = NO;
         _scrollView = scrollView;
@@ -226,13 +226,13 @@ static CGFloat const contentOffsetX = 20.0;
 
 - (UIView *)sliderView{
     
-    if (!self.titleStyle.showSlider) return nil;
-    if (!self.sliderView) {
+    if (!self.titleStyle.isShowSlider) return nil;
+    if (!_sliderView) {
         UIView *slider = [UIView new];
         slider.backgroundColor = self.titleStyle.sliderColor;
-        self.sliderView = slider;
+        _sliderView = slider;
     }
-    return self.sliderView;
+    return _sliderView;
 }
 
 - (UIButton *)extraButton{
