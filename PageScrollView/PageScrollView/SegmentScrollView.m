@@ -414,7 +414,7 @@ static CGFloat const contentOffsetX = 20.0;
     
     if (self.titleStyle.isChangeTitleColor) {//渐变颜色
         oldTitleView.textColor = [UIColor colorWithRed:[self.selectedColorArray[0] floatValue] + [self.deltaRGBArray[0] floatValue] * progress green:[self.selectedColorArray[1] floatValue] + [self.deltaRGBArray[1] floatValue] * progress blue:[self.selectedColorArray[2] floatValue] + [self.deltaRGBArray[2] floatValue] * progress alpha:1];
-        currentTitleView.textColor = [UIColor colorWithRed:[self.normalColorArray[0] floatValue] + [self.deltaRGBArray[0] floatValue] * progress green:[self.normalColorArray[1] floatValue] + [self.deltaRGBArray[1] floatValue] * progress blue:[self.normalColorArray[2] floatValue] + [self.deltaRGBArray[2] floatValue] * progress alpha:1];
+        currentTitleView.textColor = [UIColor colorWithRed:[self.normalColorArray[0] floatValue] - [self.deltaRGBArray[0] floatValue] * progress green:[self.normalColorArray[1] floatValue] - [self.deltaRGBArray[1] floatValue] * progress blue:[self.normalColorArray[2] floatValue] - [self.deltaRGBArray[2] floatValue] * progress alpha:1];
     }
     
     if (self.titleStyle.isScaleTitle) {

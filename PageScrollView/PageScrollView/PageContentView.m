@@ -234,7 +234,7 @@ static NSString *const cellID = @"cellID";
 
 - (void)setChildVcCell:(UICollectionViewCell *)cell indexPath:(NSIndexPath *)indexPath{
     
-    _currentChildVc = [self.childVcDict valueForKey:[NSString stringWithFormat:@"%ld", indexPath.row]];
+    _currentChildVc = [self.childVcDict valueForKey:[NSString stringWithFormat:@"%ld", (long)indexPath.row]];
     BOOL isFirstLoad = _currentChildVc == nil;
     
     if (_delegate && [_delegate respondsToSelector:@selector(childViewController:forIndex:)]) {
@@ -243,7 +243,7 @@ static NSString *const cellID = @"cellID";
             _currentChildVc = [_delegate childViewController:nil forIndex:indexPath.row];
             
             _currentChildVc.currentIndex = indexPath.row;
-            [self.childVcDict setValue:_currentChildVc forKey:[NSString stringWithFormat:@"%ld", indexPath.row]];
+            [self.childVcDict setValue:_currentChildVc forKey:[NSString stringWithFormat:@"%ld", (long)indexPath.row]];
         }else{
             [_delegate childViewController:_currentChildVc forIndex:indexPath.row];
         }
@@ -297,7 +297,7 @@ static NSString *const cellID = @"cellID";
                     [_currentChildVc wt_viewDidLoadForIndex:indexPath.row];
                 }
             }
-            [self didAppearAtIndex:_oldIndex];
+            [self willDisappearAtIndex:_oldIndex];
         }
     }
     
