@@ -19,6 +19,7 @@
 		5D9A70001E35DA69009BCBF5 /* PageTitleStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D9A6FFF1E35DA69009BCBF5 /* PageTitleStyle.m */; };
 		5D9A70031E35E4C4009BCBF5 /* TitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D9A70021E35E4C4009BCBF5 /* TitleView.m */; };
 		5D9A70061E360073009BCBF5 /* PageContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D9A70051E360073009BCBF5 /* PageContentView.m */; };
+		5D9C19911E4967C1001C070A /* PageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D9C19901E4967C1001C070A /* PageScrollView.m */; };
 		5DC317701E45640E0019C205 /* SegmentScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DC3176F1E45640E0019C205 /* SegmentScrollView.m */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +66,8 @@
 		5D9A70041E360073009BCBF5 /* PageContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageContentView.h; sourceTree = "<group>"; };
 		5D9A70051E360073009BCBF5 /* PageContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageContentView.m; sourceTree = "<group>"; };
 		5D9A70071E3600C6009BCBF5 /* PageScrollViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PageScrollViewDelegate.h; sourceTree = "<group>"; };
+		5D9C198F1E4967C1001C070A /* PageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageScrollView.h; sourceTree = "<group>"; };
+		5D9C19901E4967C1001C070A /* PageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageScrollView.m; sourceTree = "<group>"; };
 		5DC3176E1E45640E0019C205 /* SegmentScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SegmentScrollView.h; sourceTree = "<group>"; };
 		5DC3176F1E45640E0019C205 /* SegmentScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentScrollView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -171,6 +174,8 @@
 				5DC3176F1E45640E0019C205 /* SegmentScrollView.m */,
 				5D8CFA721E487DD00041EB51 /* UIViewController+PageController.h */,
 				5D8CFA731E487DD00041EB51 /* UIViewController+PageController.m */,
+				5D9C198F1E4967C1001C070A /* PageScrollView.h */,
+				5D9C19901E4967C1001C070A /* PageScrollView.m */,
 			);
 			path = PageScrollView;
 			sourceTree = "<group>";
@@ -316,6 +321,7 @@
 				5DC317701E45640E0019C205 /* SegmentScrollView.m in Sources */,
 				5D9A70001E35DA69009BCBF5 /* PageTitleStyle.m in Sources */,
 				5D8CFA741E487DD00041EB51 /* UIViewController+PageController.m in Sources */,
+				5D9C19911E4967C1001C070A /* PageScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

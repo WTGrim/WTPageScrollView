@@ -433,6 +433,26 @@ static CGFloat const contentOffsetX = 20.0;
     }
 }
 
+- (void)reloadTitles:(NSArray<NSString *> *)titles{
+    
+    [self.scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    
+    _currentIndex = 0;
+    _oldIndex = 0;
+    self.titleViews = nil;
+    self.titleWidths = nil;
+    self.titlesArray = nil;
+    self.titlesArray = titles.copy;
+    
+    if (titles.count == 0) return;
+    for (UIView *subView in self.subviews) {
+        [subView removeFromSuperview];
+    }
+    [self initSubviews];
+    [self setupUI];
+    [self setSelectedIndex:0 animated:YES];
+}
+
 - (NSArray *)normalColorArray{
     
     if (!_normalColorArray) {

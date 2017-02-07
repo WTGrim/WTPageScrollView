@@ -31,6 +31,6 @@ typedef void(^ExtraButtonClick)(UIButton *extraButton);
 - (void)adjustTitleOffsetToCurrentIndex:(NSInteger)currentIndex;
 //设置选中下标
 - (void)setSelectedIndex:(NSInteger)index animated:(BOOL)animated;
-
-
+//刷新
+- (void)reloadTitles:(NSArray<NSString *>*)titles;
 @end
