@@ -42,7 +42,7 @@ static NSString *const cellID = @"cellID";
         self.delegate = delegate;
         self.segmentView = segmentView;
         self.parentViewController = parentViewController;
-        
+        _needManageLifeCycle = ![parentViewController shouldAutomaticallyForwardAppearanceMethods];
         [self commonConfig];
         [self addNotification];
     }
@@ -446,6 +446,8 @@ static NSString *const cellID = @"cellID";
 - (WTCollectionView *)collectionView{
     if (!_collectionView) {
         _collectionView = [[WTCollectionView alloc]initWithFrame:self.bounds collectionViewLayout:self.collectionLayout];
+        //背景颜色
+        _collectionView.backgroundColor = [UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1];
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
         _collectionView.pagingEnabled = true;

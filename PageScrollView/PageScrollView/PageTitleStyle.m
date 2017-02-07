@@ -29,6 +29,9 @@
         _selectedTitleColor = [UIColor redColor];
         _scaleNum = 1.2;
         _titleFont = [UIFont systemFontOfSize:13];
+        
+        _segmentHeight = 44.0;
+        
     }
     return self;
 }

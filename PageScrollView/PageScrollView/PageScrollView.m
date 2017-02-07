@@ -68,7 +68,7 @@
     
     if (!_segmentView) {
         __weak typeof(self)weakSelf = self;
-        SegmentScrollView *segmentView = [[SegmentScrollView alloc]initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.titleStyle.sliderHeight) titleStyle:self.titleStyle delegate:self.delegate titlesArray:self.titles titleDidClick:^(TitleView *titleView, NSInteger index) {
+        SegmentScrollView *segmentView = [[SegmentScrollView alloc]initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.titleStyle.segmentHeight) titleStyle:self.titleStyle delegate:self.delegate titlesArray:self.titles titleDidClick:^(TitleView *titleView, NSInteger index) {
            
             [weakSelf.contentView setContentOffset:CGPointMake(weakSelf.contentView.bounds.size.width * index, 0.0) animated:self.titleStyle.isContentAnimatedWhenTitleClick];
         }];

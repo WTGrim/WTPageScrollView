@@ -82,7 +82,7 @@ static CGFloat const contentOffsetX = 20.0;
     [self addSubview:self.scrollView];
     
     if (self.titleStyle.isShowSlider) {
-        [self addSubview:self.sliderView];
+        [self.scrollView addSubview:self.sliderView];
     }
     if (self.titleStyle.isShowExtraButton) {
         [self addSubview:self.extraButton];
@@ -292,7 +292,7 @@ static CGFloat const contentOffsetX = 20.0;
                 
                 if (weakSelf.titleStyle.sliderWidthFitTitle) {
                     CGFloat sliderW = [self.titleWidths[_currentIndex] floatValue] + GapWidth;
-                    CGFloat sliderX = (currentTitleView.frame.size.width - sliderW) * 0.5;
+                    CGFloat sliderX = currentTitleView.frame.origin.x + (currentTitleView.frame.size.width - sliderW) * 0.5;
                     CGRect rect = weakSelf.sliderView.frame;
                     rect.origin.x = sliderX;
                     rect.size.width = sliderW;
@@ -412,7 +412,7 @@ static CGFloat const contentOffsetX = 20.0;
         }
     }
     
-    if (self.titleStyle.changeTitleColor) {//渐变颜色
+    if (self.titleStyle.isChangeTitleColor) {//渐变颜色
         oldTitleView.textColor = [UIColor colorWithRed:[self.selectedColorArray[0] floatValue] + [self.deltaRGBArray[0] floatValue] * progress green:[self.selectedColorArray[1] floatValue] + [self.deltaRGBArray[1] floatValue] * progress blue:[self.selectedColorArray[2] floatValue] + [self.deltaRGBArray[2] floatValue] * progress alpha:1];
         currentTitleView.textColor = [UIColor colorWithRed:[self.normalColorArray[0] floatValue] + [self.deltaRGBArray[0] floatValue] * progress green:[self.normalColorArray[1] floatValue] + [self.deltaRGBArray[1] floatValue] * progress blue:[self.normalColorArray[2] floatValue] + [self.deltaRGBArray[2] floatValue] * progress alpha:1];
     }

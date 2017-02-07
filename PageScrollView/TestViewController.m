@@ -29,7 +29,7 @@
     [testBtn addTarget:self action:@selector(testBtnOnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:testBtn];
     
-    self.pageController.title  = @"测试过";
+    self.pageController.title  = @"测试";
     
     if (index%2==0) {
         self.view.backgroundColor = [UIColor blueColor];
@@ -37,6 +37,10 @@
         self.view.backgroundColor = [UIColor greenColor];
         
     }
+}
+
+- (void)testBtnOnClick:(UIButton *)btn{
+    NSLog(@"点击了按钮");
 }
 
 // 使用系统的生命周期方法

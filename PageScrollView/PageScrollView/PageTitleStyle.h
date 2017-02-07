@@ -34,6 +34,7 @@
 @property(nonatomic, strong)UIColor *normalTitleColor;
 @property(nonatomic, strong)UIColor *selectedTitleColor;
 @property(nonatomic, strong)UIFont *titleFont;
+@property(nonatomic, assign)CGFloat segmentHeight;
 
 //标题缩放倍数
 @property(nonatomic, assign)CGFloat scaleNum;

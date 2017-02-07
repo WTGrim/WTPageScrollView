@@ -252,6 +252,7 @@
 				TargetAttributes = {
 					5D9A6FC61E35D77B009BCBF5 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 624TUL8XMA;
 						ProvisioningStyle = Automatic;
 					};
 					5D9A6FDF1E35D77B009BCBF5 = {
@@ -474,6 +475,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 624TUL8XMA;
 				INFOPLIST_FILE = PageScrollView/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Dwt.PageScrollView;
@@ -485,6 +487,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 624TUL8XMA;
 				INFOPLIST_FILE = PageScrollView/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Dwt.PageScrollView;
