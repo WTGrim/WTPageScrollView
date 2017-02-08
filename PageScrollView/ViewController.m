@@ -25,7 +25,7 @@
     style.showSlider = true;
     style.scaleTitle = true;
     style.changeTitleColor = true;
-    style.sliderWidthFitTitle = true;
+//    style.sliderWidthFitTitle = true;
     self.titles = @[@"新闻头条",
                     @"国际要闻",
                     @"体育",

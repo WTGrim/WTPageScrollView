@@ -408,6 +408,7 @@ static CGFloat const contentOffsetX = 20.0;
                 rect.origin.x = oldTitleView.frame.origin.x + distanceX * progress;
                 rect.size.width = oldTitleView.frame.size.width + distanceW * progress;
                 self.sliderView.frame = rect;
+            
             }
         }
     }
@@ -472,11 +473,13 @@ static CGFloat const contentOffsetX = 20.0;
 - (NSArray *)deltaRGBArray{
     
     if (!_deltaRGBArray) {
+        NSArray *deltaArr;
         if (self.normalColorArray && self.selectedColorArray) {
             CGFloat deltaR = [self.normalColorArray[0] floatValue] - [self.selectedColorArray[0] floatValue];
             CGFloat deltaG = [self.normalColorArray[1] floatValue] - [self.selectedColorArray[1] floatValue];
             CGFloat deltaB = [self.normalColorArray[2] floatValue] - [self.selectedColorArray[2] floatValue];
-            _deltaRGBArray = @[@(deltaR), @(deltaG), @(deltaB)];
+            deltaArr = @[@(deltaR), @(deltaG), @(deltaB)];
+            _deltaRGBArray = deltaArr;
         }
     }
     return _deltaRGBArray;

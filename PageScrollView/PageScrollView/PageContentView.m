@@ -135,7 +135,7 @@ static NSString *const cellID = @"cellID";
 #pragma mark - 外界设置偏移量
 - (void)setContentOffset:(CGPoint)offset animated:(BOOL)animated{
     
-    _forbidTouchToChangePosition = YES;
+    self.forbidTouchToChangePosition = YES;
     NSInteger currentIndex = offset.x / self.collectionView.bounds.size.width;
     _oldIndex = _currentIndex;
     self.currentIndex = currentIndex;
@@ -306,14 +306,14 @@ static NSString *const cellID = @"cellID";
 #pragma mark - scrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     
-    if (self.forbidTouchToChangePosition || self.collectionView.contentOffset.x <= 0 || self.collectionView.contentOffset.x > self.collectionView.contentSize.width - self.collectionView.bounds.size.width) {
+    if (self.forbidTouchToChangePosition || scrollView.contentOffset.x <= 0 || scrollView.contentOffset.x >= scrollView.contentSize.width - scrollView.bounds.size.width) {
         return;
     }
     
-    CGFloat tempProgress = self.collectionView.contentOffset.x / self.collectionView.bounds.size.width;
+    CGFloat tempProgress = scrollView.contentOffset.x / self.bounds.size.width;
     CGFloat progress = tempProgress - floor(tempProgress);
     NSInteger index = tempProgress;
-    CGFloat deltaX = self.collectionView.contentOffset.x - _oldOffset;
+    CGFloat deltaX = scrollView.contentOffset.x - _oldOffset;
     //向右滑动
     if (deltaX > 0) {
         if (progress == 0.0) {
@@ -337,15 +337,16 @@ static NSString *const cellID = @"cellID";
 //滚动减速完成更新title
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
-    NSInteger currentIndex = self.collectionView.contentOffset.x / self.collectionView.bounds.size.width;
+    NSInteger currentIndex = scrollView.contentOffset.x / self.bounds.size.width;
     
     [self didMoveFromIndex:currentIndex toIndex:currentIndex progress:1.0];
     [self adjustSegmentTitleToCurrentIndex:currentIndex];
 }
 
+
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
     
-    _oldOffset = self.collectionView.contentOffset.x;
+    _oldOffset = scrollView.contentOffset.x;
     self.forbidTouchToChangePosition = NO;
 }
 

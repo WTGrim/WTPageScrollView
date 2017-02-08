@@ -27,12 +27,12 @@
     [testBtn setTitle:@"点击" forState:UIControlStateNormal];
     [testBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [testBtn addTarget:self action:@selector(testBtnOnClick:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:testBtn];
+//    [self.view addSubview:testBtn];
     
     self.pageController.title  = @"测试";
     
-    if (index%2==0) {
-        self.view.backgroundColor = [UIColor blueColor];
+    if (index % 2==0) {
+        self.view.backgroundColor = [UIColor purpleColor];
     } else {
         self.view.backgroundColor = [UIColor greenColor];
         
