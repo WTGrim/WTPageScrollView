@@ -11,4 +11,7 @@
 
 @interface TestViewController : UIViewController<ScrollPageViewChildVcDelegate>
 
+@property(nonatomic, strong)NSMutableArray *dataArray;
+
+
 @end

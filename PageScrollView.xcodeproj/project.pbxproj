@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D8BE1DF1E4C032C005FC34B /* Test2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D8BE1DE1E4C032C005FC34B /* Test2ViewController.m */; };
+		5D8BE1E11E4C0FF0005FC34B /* extraBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D8BE1E01E4C0FF0005FC34B /* extraBtn.png */; };
 		5D8CFA741E487DD00041EB51 /* UIViewController+PageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D8CFA731E487DD00041EB51 /* UIViewController+PageController.m */; };
 		5D9A6FCC1E35D77B009BCBF5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D9A6FCB1E35D77B009BCBF5 /* main.m */; };
 		5D9A6FCF1E35D77B009BCBF5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D9A6FCE1E35D77B009BCBF5 /* AppDelegate.m */; };
@@ -42,6 +44,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5D8BE1DD1E4C032C005FC34B /* Test2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Test2ViewController.h; sourceTree = "<group>"; };
+		5D8BE1DE1E4C032C005FC34B /* Test2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Test2ViewController.m; sourceTree = "<group>"; };
+		5D8BE1E01E4C0FF0005FC34B /* extraBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = extraBtn.png; sourceTree = "<group>"; };
 		5D8CFA721E487DD00041EB51 /* UIViewController+PageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+PageController.h"; sourceTree = "<group>"; };
 		5D8CFA731E487DD00041EB51 /* UIViewController+PageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+PageController.m"; sourceTree = "<group>"; };
 		5D9A6FC71E35D77B009BCBF5 /* PageScrollView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PageScrollView.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -130,6 +135,9 @@
 				5D9A6FD11E35D77B009BCBF5 /* ViewController.m */,
 				5D9C19921E497639001C070A /* TestViewController.h */,
 				5D9C19931E497639001C070A /* TestViewController.m */,
+				5D8BE1DD1E4C032C005FC34B /* Test2ViewController.h */,
+				5D8BE1DE1E4C032C005FC34B /* Test2ViewController.m */,
+				5D8BE1E01E4C0FF0005FC34B /* extraBtn.png */,
 				5D9A6FD31E35D77B009BCBF5 /* Main.storyboard */,
 				5D9A6FD61E35D77B009BCBF5 /* Assets.xcassets */,
 				5D9A6FD81E35D77B009BCBF5 /* LaunchScreen.storyboard */,
@@ -295,6 +303,7 @@
 				5D9A6FDA1E35D77B009BCBF5 /* LaunchScreen.storyboard in Resources */,
 				5D9A6FD71E35D77B009BCBF5 /* Assets.xcassets in Resources */,
 				5D9A6FD51E35D77B009BCBF5 /* Main.storyboard in Resources */,
+				5D8BE1E11E4C0FF0005FC34B /* extraBtn.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,6 +328,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D8BE1DF1E4C032C005FC34B /* Test2ViewController.m in Sources */,
 				5D9A6FD21E35D77B009BCBF5 /* ViewController.m in Sources */,
 				5D9A70061E360073009BCBF5 /* PageContentView.m in Sources */,
 				5D9A6FCF1E35D77B009BCBF5 /* AppDelegate.m in Sources */,

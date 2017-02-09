@@ -9,25 +9,70 @@
 #import "TestViewController.h"
 #import "UIViewController+PageController.h"
 
-@interface TestViewController ()
+#define NavigationBarHeight  64
+#define SegmentHeight 44
+@interface TestViewController ()<UITableViewDelegate, UITableViewDataSource>
+@property(nonatomic, strong)UITableView *tableView;
 
 @end
+static NSString *const cellId = @"cellId";
 
 @implementation TestViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+- (NSMutableArray *)dataArray{
+    if (!_dataArray) {
+        _dataArray = [NSMutableArray array];
+    }
+    return _dataArray;
 }
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self initView];
+    
+}
+
+- (void)initView{
+    
+    self.view.backgroundColor = [UIColor purpleColor];
+    self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - NavigationBarHeight - SegmentHeight) style:UITableViewStylePlain];
+    self.tableView.backgroundColor = [UIColor clearColor];
+    self.tableView.backgroundView.backgroundColor = [UIColor clearColor];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.rowHeight = 50;
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:cellId];
+    [self.view addSubview:self.tableView];
+    for (int i = 0; i < 50 ; i++) {
+        NSString *str = [NSString stringWithFormat:@"测试数据%d", i];
+        [self.dataArray addObject:str];
+    }
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return self.dataArray.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId forIndexPath:indexPath];
+
+    cell.textLabel.font = [UIFont systemFontOfSize:13];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@", self.dataArray[indexPath.row]];
+    cell.backgroundView.backgroundColor = [UIColor clearColor];
+    cell.backgroundColor = [UIColor clearColor];
+    cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    return cell;
+}
+/*
 - (void)wt_viewDidLoadForIndex:(NSInteger)index {
-    //    NSLog(@"%@",self.view);
-    //    NSLog(@"%@", self.zj_scrollViewController);
-    UIButton *testBtn = [[UIButton alloc] initWithFrame:CGRectMake(100, 100, 100, 100)];
-    testBtn.backgroundColor = [UIColor whiteColor];
-    [testBtn setTitle:@"点击" forState:UIControlStateNormal];
-    [testBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [testBtn addTarget:self action:@selector(testBtnOnClick:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:testBtn];
+
+//    UIButton *testBtn = [[UIButton alloc] initWithFrame:CGRectMake(100, 100, 100, 100)];
+//    testBtn.backgroundColor = [UIColor whiteColor];
+//    [testBtn setTitle:@"点击" forState:UIControlStateNormal];
+//    [testBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+//    [testBtn addTarget:self action:@selector(testBtnOnClick:) forControlEvents:UIControlEventTouchUpInside];
+////    [self.view addSubview:testBtn];
     
     self.pageController.title  = @"测试";
     
@@ -38,6 +83,7 @@
         
     }
 }
+ */
 
 - (void)testBtnOnClick:(UIButton *)btn{
     NSLog(@"点击了按钮");

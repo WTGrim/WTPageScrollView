@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "PageScrollView.h"
 #import "TestViewController.h"
+#import "Test2ViewController.h"
 
 @interface ViewController ()<ScrollPageViewDelegate>
 @property(nonatomic, strong)NSArray *titles;
@@ -25,22 +26,31 @@
     style.showSlider = true;
     style.scaleTitle = true;
     style.changeTitleColor = true;
-//    style.sliderWidthFitTitle = true;
-    self.titles = @[@"新闻头条",
-                    @"国际要闻",
+    
+    //segment不滚动，平分宽度
+//    style.scrollTitle = false;
+    //适应宽度
+    style.sliderWidthFitTitle = true;
+
+    //附加按钮
+    style.showExtraButton = true;
+    style.extraButtonImageName = @"extraBtn.png";
+    
+    self.titles = @[@"精选",
+                    @"朝闻天下",
+                    @"新闻30分",
                     @"体育",
-                    @"中国足球",
-                    @"汽车",
-                    @"囧途旅游",
-                    @"幽默搞笑",
-                    @"视频",
-                    @"无厘头",
-                    @"美女图片",
-                    @"今日房价",
-                    @"头像",
+                    @"娱乐",
+                    @"旅游频道",
+                    @"精彩视频",
+                    @"综艺",
+                    @"热话题",
                     ];
     
     PageScrollView *pageView = [[PageScrollView alloc]initWithFrame:CGRectMake(0, 64.0, self.view.bounds.size.width, self.view.bounds.size.height - 64.0) titleStyle:style titles:self.titles parentViewController:self delegate:self];
+    pageView.extraBtnClick = ^(UIButton *btn){
+        NSLog(@"点击了附加按钮");
+    };
     [self.view addSubview:pageView];
     
 }
@@ -53,7 +63,13 @@
     
     UIViewController<ScrollPageViewChildVcDelegate> *childVc = reuseViewController;
     if (!childVc) {
-        childVc = [[TestViewController alloc]init];
+        if (index % 2 == 0) {
+            childVc = [[TestViewController alloc]init];
+            childVc.view.backgroundColor = [UIColor purpleColor];
+        }else{
+            childVc = [[Test2ViewController alloc]init];
+            childVc.view.backgroundColor = [UIColor whiteColor];
+        }
     }
     return childVc;
 }
