@@ -24,6 +24,13 @@
         _sliderColor = [UIColor redColor];
         _sliderWidthFitTitle = NO;
         _sliderHeight = 2.0;
+        
+        _coverBackgroundColor = [UIColor whiteColor];
+        _coverHeight = 28.0;
+        _coverCornerRadius = 14.0;
+        
+        _adjustCoverOrSliderWidth = NO;
+        
         _titleMargin = 15.0;
         _normalTitleColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1];
         _selectedTitleColor = [UIColor colorWithRed:255.0 / 255.0 green:0 blue:0 alpha:1];

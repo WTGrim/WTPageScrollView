@@ -11,6 +11,8 @@
 @interface PageTitleStyle : NSObject
 //显示滑动条，默认是NO
 @property(nonatomic, assign, getter=isShowSlider)BOOL showSlider;
+//显示遮盖
+@property(nonatomic, assign, getter=isShowCover)BOOL showCover;
 //显示附加按钮
 @property(nonatomic, assign, getter=isShowExtraButton)BOOL showExtraButton;
 
@@ -26,6 +28,8 @@
 @property(nonatomic, assign, getter=isAdjustTitleBeginDrag)BOOL adjustTitleBeginDrag;
 //当scrollTitle设置为NO时，将lineWidthFitTitle设置为yes，可将滑动条的宽度适配文字宽度，默认为NO
 @property(nonatomic, assign, getter=isLineWidthFitTitle)BOOL sliderWidthFitTitle;
+@property(nonatomic, assign, getter=isAdjustCoverOrSliderWidth)BOOL adjustCoverOrSliderWidth;
+
 //滑动条颜色
 @property(nonatomic, strong)UIColor *sliderColor;
 @property(nonatomic, assign)CGFloat sliderHeight;
@@ -35,6 +39,12 @@
 @property(nonatomic, strong)UIColor *selectedTitleColor;
 @property(nonatomic, strong)UIFont *titleFont;
 @property(nonatomic, assign)CGFloat segmentHeight;
+
+//遮盖相关属性
+@property(nonatomic, strong)UIColor *coverBackgroundColor;
+@property(nonatomic, assign)CGFloat coverHeight;
+@property(nonatomic, assign)CGFloat coverCornerRadius;
+
 
 //标题缩放倍数
 @property(nonatomic, assign)CGFloat scaleNum;

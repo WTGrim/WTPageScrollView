@@ -16,6 +16,9 @@
 }
 //滑动条
 @property(nonatomic, strong)UIView *sliderView;
+//遮盖
+@property(nonatomic, strong)UIView *coverLayer;
+
 //滚动的ScrollView
 @property(nonatomic, strong)UIScrollView *scrollView;
 //背景
@@ -67,7 +70,7 @@ static CGFloat const contentOffsetX = 20.0;
         _oldIndex = 0;
         _currentWidth = frame.size.width;
         if (!self.titleStyle.isScrollTitle) {
-            self.titleStyle.scaleTitle = !self.titleStyle.isShowSlider;  //放大标题和滑条不同时使用
+            self.titleStyle.scaleTitle = !(self.titleStyle.isShowSlider || self.titleStyle.isShowCover);  //放大标题和滑条不同时使用
         }
         
         [self initSubviews];
@@ -84,6 +87,11 @@ static CGFloat const contentOffsetX = 20.0;
     if (self.titleStyle.isShowSlider) {
         [self.scrollView addSubview:self.sliderView];
     }
+    
+    if (self.titleStyle.isShowCover) {
+        [self.scrollView insertSubview:self.coverLayer atIndex:0];
+    }
+    
     if (self.titleStyle.isShowExtraButton) {
         [self addSubview:self.extraButton];
     }
@@ -208,6 +216,8 @@ static CGFloat const contentOffsetX = 20.0;
     TitleView *firstTitleView = self.titleViews[0];
     CGFloat sliderX = firstTitleView.frame.origin.x;
     CGFloat sliderW = firstTitleView.frame.size.width;
+    CGFloat coverH = self.titleStyle.coverHeight;
+    CGFloat coverY = (self.bounds.size.height - coverH) * 0.5;
     
     if (self.sliderView) {
         if (self.titleStyle.isScrollTitle) {
@@ -219,6 +229,23 @@ static CGFloat const contentOffsetX = 20.0;
             }
             self.sliderView.frame = CGRectMake(sliderX, self.frame.size.height - self.titleStyle.sliderHeight, sliderW, self.titleStyle.sliderHeight);
         }
+    }
+    
+    if (self.coverLayer) {
+        
+        if (self.titleStyle.isScrollTitle) {
+            self.coverLayer.frame = CGRectMake(sliderX - Gapx, coverY, sliderW + GapWidth, coverH);
+            
+        } else {
+            if (self.titleStyle.isAdjustCoverOrSliderWidth) {
+                sliderW = [self.titleWidths[_currentIndex] floatValue] + GapWidth;
+                sliderX = (firstTitleView.frame.size.width - sliderW) * 0.5;
+            }
+            
+            self.coverLayer.frame = CGRectMake(sliderX, coverY, sliderW, coverH);
+            
+        }
+        
     }
     
     
@@ -305,6 +332,30 @@ static CGFloat const contentOffsetX = 20.0;
                 }
             }
         }
+        
+        CGRect coverRect = weakSelf.coverLayer.frame;
+        if (weakSelf.coverLayer) {
+            if (weakSelf.titleStyle.isScrollTitle) {
+                coverRect.origin.x = currentTitleView.frame.origin.x - Gapx;
+                coverRect.size.width = currentTitleView.frame.size.width + GapWidth;
+                weakSelf.coverLayer.frame = coverRect;
+            } else {
+                
+                if (self.titleStyle.isAdjustCoverOrSliderWidth) {
+                    CGFloat coverW = [self.titleWidths[_currentIndex] floatValue] + GapWidth;
+                    CGFloat coverX = currentTitleView.frame.origin.x + (currentTitleView.frame.size.width - coverW) * 0.5;
+                    coverRect.origin.x = coverX;
+                    coverRect.size.width = coverW;
+                    weakSelf.coverLayer.frame = coverRect;
+                } else {
+                    
+                    coverRect.origin.x = currentTitleView.frame.origin.x;
+                    coverRect.size.width = currentTitleView.frame.size.width;
+                    weakSelf.coverLayer.frame = coverRect;
+                }
+            }
+        }
+        
     } completion:^(BOOL finished) {
         
         [weakSelf adjustTitleOffsetToCurrentIndex:_currentIndex];
@@ -413,6 +464,35 @@ static CGFloat const contentOffsetX = 20.0;
         }
     }
     
+    if (self.coverLayer) {
+        
+        CGRect rect = self.coverLayer.frame;
+        if (self.titleStyle.isScrollTitle) {
+            
+            rect.origin.x = oldTitleView.frame.origin.x + distanceX * progress - Gapx;
+            rect.size.width = oldTitleView.frame.size.width + distanceW * progress + GapWidth;
+            self.coverLayer.frame = rect;
+            
+        } else {
+            if (self.titleStyle.isAdjustCoverOrSliderWidth) {
+                CGFloat oldCoverW = [self.titleWidths[oldIndex] floatValue] + Gapx;
+                CGFloat currentCoverW = [self.titleWidths[currentIndex] floatValue] + GapWidth;
+                distanceW = currentCoverW - oldCoverW;
+                CGFloat oldCoverX = oldTitleView.frame.origin.x + (oldTitleView.frame.size.width - oldCoverW) * 0.5;
+                CGFloat currentCoverX = currentTitleView.frame.origin.x + (currentTitleView.frame.size.width - currentCoverW) * 0.5;
+                distanceX = currentCoverX - oldCoverX;
+                rect.origin.x = oldCoverX + distanceX * progress;
+                rect.size.width = oldCoverW + distanceW * progress;
+                self.coverLayer.frame = rect;
+            } else {
+                rect.origin.x = oldTitleView.frame.origin.x + distanceX * progress;
+                rect.size.width = oldTitleView.frame.size.width + distanceW * progress;
+                self.coverLayer.frame = rect;
+                
+            }
+        }
+    }
+    
     if (self.titleStyle.isChangeTitleColor) {//渐变颜色
         oldTitleView.textColor = [UIColor colorWithRed:[self.selectedColorArray[0] floatValue] + [self.deltaRGBArray[0] floatValue] * progress green:[self.selectedColorArray[1] floatValue] + [self.deltaRGBArray[1] floatValue] * progress blue:[self.selectedColorArray[2] floatValue] + [self.deltaRGBArray[2] floatValue] * progress alpha:1];
         currentTitleView.textColor = [UIColor colorWithRed:[self.normalColorArray[0] floatValue] - [self.deltaRGBArray[0] floatValue] * progress green:[self.normalColorArray[1] floatValue] - [self.deltaRGBArray[1] floatValue] * progress blue:[self.normalColorArray[2] floatValue] - [self.deltaRGBArray[2] floatValue] * progress alpha:1];
@@ -432,6 +512,24 @@ static CGFloat const contentOffsetX = 20.0;
     if (self.extraButtonClick) {
         self.extraButtonClick(btn);
     }
+}
+
+- (UIView *)coverLayer {
+    if (!self.titleStyle.isShowCover) {
+        return nil;
+    }
+    
+    if (_coverLayer == nil) {
+        UIView *coverView = [[UIView alloc] init];
+        coverView.backgroundColor = self.titleStyle.coverBackgroundColor;
+        coverView.layer.cornerRadius = self.titleStyle.coverCornerRadius;
+        coverView.layer.masksToBounds = YES;
+        
+        _coverLayer = coverView;
+        
+    }
+    
+    return _coverLayer;
 }
 
 - (void)reloadTitles:(NSArray<NSString *> *)titles{
